@@ -1,9 +1,12 @@
 import os
 from dotenv import load_dotenv
-
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
-from countdown import Countdown
 from datetime import datetime
+
+from countdown import Countdown
+from hypeometer import Hypeometer
+from localizers.en import En
+from localizers.ru import Ru
 
 load_dotenv()
 mode = os.getenv("MODE")
@@ -18,27 +21,35 @@ TOKEN = os.getenv("TOKEN")
 def hype_level_en(bot, update):
   chat_id = update.message.chat_id
 
-  bot.send_message(chat_id=chat_id, text='Hype!!!!!!!')
+  hypeometer = Hypeometer(hype_level(), En)
+  bot.send_message(chat_id=chat_id, text=hypeometer.hype_level())
 
 def days_left_en(bot, update):
   chat_id = update.message.chat_id
 
-  countdown = Countdown(next_event(), 'en')
+  countdown = Countdown(next_event(), En)
   bot.send_message(chat_id=chat_id, text=countdown.message())
 
 def hype_level_ru(bot, update):
   chat_id = update.message.chat_id
 
-  bot.send_message(chat_id=chat_id, text='Хайп!!!!!!!')
+  hypeometer = Hypeometer(hype_level(), Ru)
+  bot.send_message(chat_id=chat_id, text=hypeometer.hype_level())
 
 def days_left_ru(bot, update):
   chat_id = update.message.chat_id
 
-  countdown = Countdown(next_event(), 'ru')
+  countdown = Countdown(next_event(), Ru)
   bot.send_message(chat_id=chat_id, text=countdown.message())
 
 def next_event():
   return datetime(2019, 8, 13, 7, 0)
+
+def hype_level():
+  mapping = [5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1]
+  countdown = Countdown(next_event(), Ru)
+  days_left = countdown.difference().days
+  return mapping[days_left]
 
 if mode == "prod":
   def run(updater):

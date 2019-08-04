@@ -23,3 +23,7 @@ class En(Base):
   @staticmethod
   def seconds(value):
     return En.pick_number('second', 'seconds', value)
+
+  @staticmethod
+  def hype():
+    return 'hype'

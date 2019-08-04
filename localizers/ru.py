@@ -26,3 +26,7 @@ class Ru(Base):
   @staticmethod
   def seconds(value):
     return Ru.pick_number('секунда', 'секунды', 'секунд', value)
+
+  @staticmethod
+  def hype():
+    return 'Хайп'
