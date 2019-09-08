@@ -1,29 +1,29 @@
 from .base import Base
 
 class En(Base):
-  @staticmethod
+  @classmethod
   def pick_number(singular, plural, value):
     if value == 1:
       return singular
 
     return plural
 
-  @staticmethod
+  @classmethod
   def days(value):
     return En.pick_number('day', 'days', value)
 
-  @staticmethod
+  @classmethod
   def hours(value):
     return En.pick_number('hour', 'hours', value)
 
-  @staticmethod
+  @classmethod
   def minutes(value):
     return En.pick_number('minute', 'minutes', value)
 
-  @staticmethod
+  @classmethod
   def seconds(value):
     return En.pick_number('second', 'seconds', value)
 
-  @staticmethod
+  @classmethod
   def hype():
     return 'hype'

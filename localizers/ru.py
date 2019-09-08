@@ -11,22 +11,22 @@ class Ru(Base):
 
     return plural2
 
-  @staticmethod
+  @classmethod
   def days(value):
     return Ru.pick_number('день', 'дня', 'дней', value)
 
-  @staticmethod
+  @classmethod
   def hours(value):
     return Ru.pick_number('час', 'часа', 'часов', value)
 
-  @staticmethod
+  @classmethod
   def minutes(value):
     return Ru.pick_number('минута', 'минуты', 'минут', value)
 
-  @staticmethod
+  @classmethod
   def seconds(value):
     return Ru.pick_number('секунда', 'секунды', 'секунд', value)
 
-  @staticmethod
+  @classmethod
   def hype():
     return 'Хайп'
