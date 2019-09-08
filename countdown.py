@@ -19,7 +19,7 @@ class Countdown:
     )
 
   def __difference(self):
-    return TimeDifference(self.seconds_left())
+    return TimeDifference(self.__seconds_left())
 
   def __current_time(self):
     return datetime.utcnow()
@@ -27,5 +27,5 @@ class Countdown:
   def __delta(self):
     return self.next_event - self.__current_time()
 
-  def seconds_left(self):
+  def __seconds_left(self):
     return int(self.__delta().total_seconds())
