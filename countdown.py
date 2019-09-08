@@ -6,27 +6,26 @@ from localizers.ru import Ru
 class Countdown:
   def __init__(self, event_date, localizer = En):
     self.next_event = event_date
-    self._delta_cache = None
     self.localizer = localizer
 
   def message(self):
-    diff = self.difference()
+    diff = self.__difference()
 
-    return '{} {} {} {} {} {} {} {}'.format(
-      diff.days, self.localizer.days(diff.days),
-      diff.hours, self.localizer.hours(diff.hours),
-      diff.minutes, self.localizer.minutes(diff.minutes),
-      diff.seconds, self.localizer.seconds(diff.seconds)
+    return (
+      f'{diff.days} {self.localizer.days(diff.days)} '
+      f'{diff.hours} {self.localizer.hours(diff.hours)} '
+      f'{diff.minutes} {self.localizer.minutes(diff.minutes)} '
+      f'{diff.seconds} {self.localizer.seconds(diff.seconds)}'
     )
 
-  def difference(self):
+  def __difference(self):
     return TimeDifference(self.seconds_left())
 
-  def current_time(self):
-    return datetime.now()
+  def __current_time(self):
+    return datetime.utcnow()
 
-  def delta(self):
-    return self.next_event - self.current_time()
+  def __delta(self):
+    return self.next_event - self.__current_time()
 
   def seconds_left(self):
-    return int(self.delta().total_seconds())
+    return int(self.__delta().total_seconds())
