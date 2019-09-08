@@ -1,16 +1,18 @@
-class Base:
-  @staticmethod
+from abc import ABCMeta, abstractmethod
+
+class Base(metaclass=ABCMeta):
+  @abstractmethod
   def days(value):
-    raise NotImplementedError
+    pass
 
-  @staticmethod
+  @abstractmethod
   def hours(value):
-    raise NotImplementedError
+    pass
 
-  @staticmethod
+  @abstractmethod
   def minutes(value):
-    raise NotImplementedError
+    pass
 
-  @staticmethod
+  @abstractmethod
   def seconds(value):
-    raise NotImplementedError
+    pass
