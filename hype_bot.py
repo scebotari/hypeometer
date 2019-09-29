@@ -4,13 +4,13 @@ from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 from datetime import datetime
 
 from utils.countdown import Countdown
-from hypeometer.hypeometer import Hypeometer
+# from hypeometer.hypeometer import Hypeometer
+# from utils.hypeometer import Hypeometer
 from responders.days_left import DaysLeft
+from responders.hype_level import HypeLevel
 from locales.configs import set_locale
 
 load_dotenv()
-mode = os.getenv("MODE")
-TOKEN = os.getenv("TOKEN")
 
 # List of available commands
 # hype_level - Show the level of hype
@@ -18,62 +18,76 @@ TOKEN = os.getenv("TOKEN")
 # hype_level_ru - Показать уровень хайпа до следующего события
 # days_left_ru - Показать количество дней до следующего события
 
-def days_left_en(bot, update):
-  set_locale('en')
-  days_left(bot, update)
+class Bot:
+  def __init__(self):
+    self.mode = os.environ.get("MODE") or 'development'
+    self.token = os.environ.get("TOKEN")
+    self.updater = Updater(self.token)
+    self.bind_commands()
 
-def days_left_ru(bot, update):
-  set_locale('ru')
-  days_left(bot, update)
+  def days_left_en(self, bot, update):
+    set_locale('en')
+    self.days_left(bot, update)
 
-def days_left(bot, update):
-  chat_id = update.message.chat_id
-  bot.send_message(chat_id=chat_id, text=DaysLeft(next_event()).response())
+  def days_left_ru(self, bot, update):
+    set_locale('ru')
+    self.days_left(bot, update)
 
-def hype_level_en(bot, update):
-  chat_id = update.message.chat_id
+  def days_left(self, bot, update):
+    chat_id = update.message.chat_id
+    responder = DaysLeft(self.next_event())
+    bot.send_message(chat_id=chat_id, text=responder.response())
 
-  hypeometer = Hypeometer(hype_level(), En)
-  bot.send_message(chat_id=chat_id, text=hypeometer.hype_level())
+  def hype_level_en(self, bot, update):
+    set_locale('en')
+    self.hype_level(bot, update)
 
-def hype_level_ru(bot, update):
-  chat_id = update.message.chat_id
+  def hype_level_ru(self, bot, update):
+    set_locale('ru')
+    self.hype_level(bot, update)    
 
-  hypeometer = Hypeometer(hype_level(), Ru)
-  bot.send_message(chat_id=chat_id, text=hypeometer.hype_level())
+  def hype_level(self, bot, update):
+    chat_id = update.message.chat_id
 
-def next_event():
-  return datetime(2019, 10, 25, 7, 0)
+    responder = HypeLevel(self.next_event())
+    bot.send_message(chat_id=chat_id, text=responder.response())
 
-def hype_level():
-  # mapping = [5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1]
-  # countdown = Countdown(next_event(), Ru)
-  # days_left = countdown.difference().days
-  # return mapping[days_left]
-  return 3
 
-if mode == "prod":
-  def run(updater):
-    PORT = int(os.environ.get("PORT", "8443"))
-    HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME")
-    # Code from https://github.com/python-telegram-bot/python-telegram-bot/wiki/Webhooks#heroku
-    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
-    updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
-else:
-  def run(updater):
-    updater.start_polling()
-    updater.idle()
+  def next_event(self):
+    return datetime(2019, 10, 25, 7, 0)
+
+  def bind_commands(self):
+    dp = self.updater.dispatcher
+    dp.add_handler(CommandHandler('hype_level', self.hype_level_en))
+    dp.add_handler(CommandHandler('days_left', self.days_left_en))
+    dp.add_handler(CommandHandler('hype_level_ru', self.hype_level_ru))
+    dp.add_handler(CommandHandler('days_left_ru', self.days_left_ru))
+
+  def run_production(self):
+    port = int(os.environ.get("PORT", "8443"))
+    app_name = os.environ.get("HEROKU_APP_NAME")
+
+    self.updater.start_webhook(listen="0.0.0.0", port=port, url_path=self.token)
+    self.updater.bot.set_webhook(
+      "https://{}.herokuapp.com/{}".format(app_name, self.token)
+    )
+
+  def run_development(self):
+    self.updater.start_polling()
+    self.updater.idle()
+
+  def run(self):
+    if self.mode == 'prod':
+      self.run_production()
+    else:
+      self.run_development()
 
 def main():
-  updater = Updater(TOKEN)
-
-  dp = updater.dispatcher
-  dp.add_handler(CommandHandler('hype_level', hype_level_en))
-  dp.add_handler(CommandHandler('days_left', days_left_en))
-  dp.add_handler(CommandHandler('hype_level_ru', hype_level_ru))
-  dp.add_handler(CommandHandler('days_left_ru', days_left_ru))
-
-  run(updater)
+  Bot().run()
 
 if __name__ == '__main__':
   main()
+
+hypeometer = HypeLevel(datetime(2019, 10, 25, 7, 0))
+print(hypeometer.response())
+# print(Hypeometer(datetime(2019, 10, 1, 7, 0), datetime(2019, 10, 25, 7, 0)).percentage)

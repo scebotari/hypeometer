@@ -41,3 +41,6 @@ msgid_plural "%(value)d seconds"
 msgstr[0] "%(value)d секунда"
 msgstr[1] "%(value)d секунды"
 msgstr[2] "%(value)d секунд"
+
+msgid "Hype level"
+msgstr "Уровень хайпа"
