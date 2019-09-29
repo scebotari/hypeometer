@@ -1,0 +1,1 @@
+xgettext -d days_left -o locales/ru/LC_MESSAGES/days_left.pot responders/days_left.py

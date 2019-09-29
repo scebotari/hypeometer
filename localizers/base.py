@@ -1,18 +1,22 @@
 from abc import ABCMeta, abstractmethod
 
 class Base(metaclass=ABCMeta):
+  @classmethod
   @abstractmethod
-  def days(value):
+  def days(cls, value):
     pass
 
+  @classmethod
   @abstractmethod
-  def hours(value):
+  def hours(cls, value):
     pass
 
+  @classmethod
   @abstractmethod
-  def minutes(value):
+  def minutes(cls, value):
     pass
 
+  @classmethod
   @abstractmethod
-  def seconds(value):
+  def seconds(cls, value):
     pass

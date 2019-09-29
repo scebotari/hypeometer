@@ -1,0 +1,1 @@
+msgfmt -o locales/ru/LC_MESSAGES/hypeometer.mo locales/ru/LC_MESSAGES/hypeometer.pot

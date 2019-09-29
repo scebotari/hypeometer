@@ -3,10 +3,10 @@ from dotenv import load_dotenv
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 from datetime import datetime
 
-from countdown import Countdown
-from hypeometer import Hypeometer
-from localizers.en import En
-from localizers.ru import Ru
+from utils.countdown import Countdown
+from hypeometer.hypeometer import Hypeometer
+from responders.days_left import DaysLeft
+from locales.configs import set_locale
 
 load_dotenv()
 mode = os.getenv("MODE")
@@ -18,17 +18,23 @@ TOKEN = os.getenv("TOKEN")
 # hype_level_ru - Показать уровень хайпа до следующего события
 # days_left_ru - Показать количество дней до следующего события
 
+def days_left_en(bot, update):
+  set_locale('en')
+  days_left(bot, update)
+
+def days_left_ru(bot, update):
+  set_locale('ru')
+  days_left(bot, update)
+
+def days_left(bot, update):
+  chat_id = update.message.chat_id
+  bot.send_message(chat_id=chat_id, text=DaysLeft(next_event()).response())
+
 def hype_level_en(bot, update):
   chat_id = update.message.chat_id
 
   hypeometer = Hypeometer(hype_level(), En)
   bot.send_message(chat_id=chat_id, text=hypeometer.hype_level())
-
-def days_left_en(bot, update):
-  chat_id = update.message.chat_id
-
-  countdown = Countdown(next_event(), En)
-  bot.send_message(chat_id=chat_id, text=countdown.message())
 
 def hype_level_ru(bot, update):
   chat_id = update.message.chat_id
@@ -36,20 +42,15 @@ def hype_level_ru(bot, update):
   hypeometer = Hypeometer(hype_level(), Ru)
   bot.send_message(chat_id=chat_id, text=hypeometer.hype_level())
 
-def days_left_ru(bot, update):
-  chat_id = update.message.chat_id
-
-  countdown = Countdown(next_event(), Ru)
-  bot.send_message(chat_id=chat_id, text=countdown.message())
-
 def next_event():
-  return datetime(2019, 8, 13, 7, 0)
+  return datetime(2019, 10, 25, 7, 0)
 
 def hype_level():
-  mapping = [5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1]
-  countdown = Countdown(next_event(), Ru)
-  days_left = countdown.difference().days
-  return mapping[days_left]
+  # mapping = [5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1]
+  # countdown = Countdown(next_event(), Ru)
+  # days_left = countdown.difference().days
+  # return mapping[days_left]
+  return 3
 
 if mode == "prod":
   def run(updater):
