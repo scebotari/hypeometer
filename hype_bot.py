@@ -87,7 +87,3 @@ def main():
 
 if __name__ == '__main__':
   main()
-
-hypeometer = HypeLevel(datetime(2019, 10, 25, 7, 0))
-print(hypeometer.response())
-# print(Hypeometer(datetime(2019, 10, 1, 7, 0), datetime(2019, 10, 25, 7, 0)).percentage)
