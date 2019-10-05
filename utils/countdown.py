@@ -6,13 +6,10 @@ class Countdown:
     self.date = date
 
   def difference(self):
-    return TimeDifference(self.__seconds_left())
+    return TimeDifference(self.__delta())
 
   def __current_time(self):
     return datetime.utcnow()
 
   def __delta(self):
     return self.date - self.__current_time()
-
-  def __seconds_left(self):
-    return int(self.__delta().total_seconds())
