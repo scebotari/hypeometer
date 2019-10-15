@@ -44,3 +44,6 @@ msgstr[2] "%(value)d секунд"
 
 msgid "Hype level"
 msgstr "Уровень хайпа"
+
+msgid "There are no upcoming events registered"
+msgstr "Не найдено зарегестрированный событий"

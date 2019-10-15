@@ -2,15 +2,14 @@ import os
 from dotenv import load_dotenv
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 from datetime import datetime
-
-from utils.countdown import Countdown
-# from hypeometer.hypeometer import Hypeometer
-# from utils.hypeometer import Hypeometer
-from responders.days_left import DaysLeft
-from responders.hype_level import HypeLevel
+import database
 from locales.configs import set_locale
 
 load_dotenv()
+database.connect()
+
+from responders.days_left import DaysLeft
+from responders.hype_level import HypeLevel
 
 # List of available commands
 # hype_level - Show the level of hype
@@ -35,8 +34,7 @@ class Bot:
 
   def days_left(self, bot, update):
     chat_id = update.message.chat_id
-    responder = DaysLeft(self.next_event())
-    bot.send_message(chat_id=chat_id, text=responder.response())
+    bot.send_message(chat_id=chat_id, text=DaysLeft().response())
 
   def hype_level_en(self, bot, update):
     set_locale('en')
@@ -49,12 +47,7 @@ class Bot:
   def hype_level(self, bot, update):
     chat_id = update.message.chat_id
 
-    responder = HypeLevel(self.next_event())
-    bot.send_message(chat_id=chat_id, text=responder.response())
-
-
-  def next_event(self):
-    return datetime(2019, 10, 25, 7, 0)
+    bot.send_message(chat_id=chat_id, text=HypeLevel().response())
 
   def bind_commands(self):
     dp = self.updater.dispatcher
@@ -87,3 +80,6 @@ def main():
 
 if __name__ == '__main__':
   main()
+
+
+# from models.event import Event

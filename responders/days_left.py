@@ -1,8 +1,13 @@
+from models.event import Event
 from utils.countdown import Countdown
 
 class DaysLeft:
-  def __init__(self, next_event_date):
-    self.next_event_date = next_event_date
+  def __init__(self):
+    self._next_event = Event.next()
+
+  @property
+  def next_event(self):
+    return self._next_event
 
   def formatter(func):
     def func_wrapper(self, value):
@@ -34,7 +39,10 @@ class DaysLeft:
     return ['second', 'seconds']
 
   def response(self):
-    diff = Countdown(self.next_event_date).difference()
+    if self.next_event == None:
+      return _('There are no upcoming events registered')
+
+    diff = Countdown(self.next_event.take_place_at).difference()
 
     return (
       f'{self.days(diff.days)} {self.hours(diff.hours)} '
