@@ -5,12 +5,8 @@ class HypeLevel:
   SCALE = 50
 
   def __init__(self):
-    self._next_event = Event.next()
+    self.next_event = Event.next()
     self._percentage = None
-
-  @property
-  def next_event(self):
-    return self._next_event
 
   @property
   def percentage(self):

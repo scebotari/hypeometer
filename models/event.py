@@ -1,20 +1,30 @@
 from walrus import *
+from datetime import datetime
 
 from database import connection
 
 class Event(Model):
   __database__ = connection
 
-  name = TextField()
+  name = TextField(primary_key=True)
   registered_at = DateTimeField()
-  take_place_at = DateTimeField(index=True)
+  take_place_at = DateTimeField()
+
+  @classmethod
+  def register(cls, **attrs):
+    attrs['registered_at'] = datetime.utcnow()
+    return cls.create(**attrs)    
+
+  @classmethod
+  def register_or_update(cls, **attrs):
+    try:
+      existing = cls.load(attrs['name'])
+      existing.take_place_at = attrs['take_place_at']
+      existing.save()
+      return existing
+    except KeyError:
+      return cls.register(**attrs)
 
   @classmethod
   def next(cls):
     return next(Event.query(order_by=Event.take_place_at), None)
-
-# Event.next().delete()
-# from datetime import datetime
-# Event.create(name='ESL', registered_at=datetime(2019, 10, 1), take_place_at=datetime(2019, 10, 25))
-# for event in Event.all():
-#   print(event.name, event.registered_at, event.take_place_at)

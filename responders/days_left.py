@@ -3,11 +3,7 @@ from utils.countdown import Countdown
 
 class DaysLeft:
   def __init__(self):
-    self._next_event = Event.next()
-
-  @property
-  def next_event(self):
-    return self._next_event
+    self.next_event = Event.next()
 
   def formatter(func):
     def func_wrapper(self, value):

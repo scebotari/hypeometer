@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
-from datetime import datetime
 import database
 from locales.configs import set_locale
 
@@ -10,8 +9,10 @@ database.connect()
 
 from responders.days_left import DaysLeft
 from responders.hype_level import HypeLevel
+from responders.event_responder import EventResponder
 
 # List of available commands
+# register - Register a new event. Example: /register <date:DD-MM-YYYY> <event_name:string>
 # hype_level - Show the level of hype
 # days_left - Days before the next trip
 # hype_level_ru - Показать уровень хайпа до следующего события
@@ -46,8 +47,14 @@ class Bot:
 
   def hype_level(self, bot, update):
     chat_id = update.message.chat_id
+    print(update['message']['chat']['id'])
 
     bot.send_message(chat_id=chat_id, text=HypeLevel().response())
+
+  def register(self, bot, update, args):
+    chat_id = update.message.chat_id
+
+    bot.send_message(chat_id=chat_id, text=EventResponder.register(args))
 
   def bind_commands(self):
     dp = self.updater.dispatcher
@@ -55,6 +62,7 @@ class Bot:
     dp.add_handler(CommandHandler('days_left', self.days_left_en))
     dp.add_handler(CommandHandler('hype_level_ru', self.hype_level_ru))
     dp.add_handler(CommandHandler('days_left_ru', self.days_left_ru))
+    dp.add_handler(CommandHandler('register', self.register, pass_args=True))
 
   def run_production(self):
     port = int(os.environ.get("PORT", "8443"))
@@ -80,6 +88,3 @@ def main():
 
 if __name__ == '__main__':
   main()
-
-
-# from models.event import Event
