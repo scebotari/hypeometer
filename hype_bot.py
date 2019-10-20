@@ -28,33 +28,33 @@ class Bot:
     self.updater = Updater(self.token)
     self.bind_commands()
 
-  def days_left_en(self, bot, update):
+  def days_left_en(self, bot, update, args):
     set_locale('en')
-    self.days_left(bot, update)
+    self.days_left(bot, update, args)
 
-  def days_left_ru(self, bot, update):
+  def days_left_ru(self, bot, update, args):
     set_locale('ru')
-    self.days_left(bot, update)
+    self.days_left(bot, update, args)
 
-  def days_left(self, bot, update):
+  def days_left(self, bot, update, args):
     chat_id = update.message.chat_id
     self.set_namespace(chat_id)
 
-    bot.send_message(chat_id=chat_id, text=DaysLeft().response())
+    bot.send_message(chat_id=chat_id, text=DaysLeft.response(args))
 
-  def hype_level_en(self, bot, update):
+  def hype_level_en(self, bot, update, args):
     set_locale('en')
-    self.hype_level(bot, update)
+    self.hype_level(bot, update, args)
 
-  def hype_level_ru(self, bot, update):
+  def hype_level_ru(self, bot, update, args):
     set_locale('ru')
-    self.hype_level(bot, update)
+    self.hype_level(bot, update, args)
 
-  def hype_level(self, bot, update):
+  def hype_level(self, bot, update, args):
     chat_id = update.message.chat_id
     self.set_namespace(chat_id)
 
-    bot.send_message(chat_id=chat_id, text=HypeLevel().response())
+    bot.send_message(chat_id=chat_id, text=HypeLevel.response(args))
 
   def register(self, bot, update, args):
     chat_id = update.message.chat_id
@@ -79,10 +79,10 @@ class Bot:
 
   def bind_commands(self):
     dp = self.updater.dispatcher
-    dp.add_handler(CommandHandler('hype_level', self.hype_level_en))
-    dp.add_handler(CommandHandler('days_left', self.days_left_en))
-    dp.add_handler(CommandHandler('hype_level_ru', self.hype_level_ru))
-    dp.add_handler(CommandHandler('days_left_ru', self.days_left_ru))
+    dp.add_handler(CommandHandler('hype_level', self.hype_level_en, pass_args=True))
+    dp.add_handler(CommandHandler('days_left', self.days_left_en, pass_args=True))
+    dp.add_handler(CommandHandler('hype_level_ru', self.hype_level_ru, pass_args=True))
+    dp.add_handler(CommandHandler('days_left_ru', self.days_left_ru, pass_args=True))
     dp.add_handler(CommandHandler('register', self.register, pass_args=True))
     dp.add_handler(CommandHandler('list', self.list))
     dp.add_handler(CommandHandler('delete', self.delete, pass_args=True))
@@ -112,7 +112,8 @@ def main():
 if __name__ == '__main__':
   main()
 
-# Event.create(name='Test')
+# from datetime import datetime
+# Event.register_or_update(name='Test', take_place_at=datetime(2019, 10, 26))
 # Event.__namespace__ = 'default'
 # event = Event.next()
 # print(event.name)

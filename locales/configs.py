@@ -7,3 +7,5 @@ locales = {
 
 def set_locale(locale = 'en'):
   locales[locale].install(names='ngettext')
+
+set_locale()

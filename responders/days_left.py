@@ -1,13 +1,10 @@
-from models.event import Event
+from responders.base_responder import BaseResponder
 from utils.countdown import Countdown
 
-class DaysLeft:
-  def __init__(self):
-    self.next_event = Event.next()
-
+class DaysLeft(BaseResponder):
   def formatter(func):
-    def func_wrapper(self, value):
-      measurment = func(self)
+    def func_wrapper(cls, value):
+      measurment = func(cls)
       localized = ngettext(
         f'%(value)d {measurment[0]}',
         f'%(value)d {measurment[1]}',
@@ -18,29 +15,37 @@ class DaysLeft:
   
     return func_wrapper
 
+  @classmethod
   @formatter
-  def days(self):
+  def days(cls):
     return ['day', 'days']
 
+  @classmethod
   @formatter
-  def hours(self):
+  def hours(cls):
     return ['hour', 'hours']
 
+  @classmethod
   @formatter
-  def minutes(self):
+  def minutes(cls):
     return ['minute', 'minutes']
 
+  @classmethod
   @formatter
-  def seconds(self):
+  def seconds(cls):
     return ['second', 'seconds']
 
-  def response(self):
-    if self.next_event == None:
-      return _('There are no upcoming events registered')
+  @classmethod
+  def header(cls, name):
+    return _('"%(name)s" will take place in:') % { 'name': name }
 
-    diff = Countdown(self.next_event.take_place_at).difference()
+  @classmethod
+  @BaseResponder.event_based
+  def response(cls, event):
+    diff = Countdown(event.take_place_at).difference()
 
     return (
-      f'{self.days(diff.days)} {self.hours(diff.hours)} '
-      f'{self.minutes(diff.minutes)} {self.seconds(diff.seconds)}'
+      f'{cls.header(event.name)}\n'
+      f'{cls.days(diff.days)} {cls.hours(diff.hours)} '
+      f'{cls.minutes(diff.minutes)} {cls.seconds(diff.seconds)}'
     )

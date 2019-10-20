@@ -1,39 +1,30 @@
-from models.event import Event
+from responders.base_responder import BaseResponder
 from utils.hypeometer import Hypeometer
 
-class HypeLevel:
+class HypeLevel(BaseResponder):
   SCALE = 50
 
-  def __init__(self):
-    self.next_event = Event.next()
-    self._percentage = None
+  @classmethod
+  def title(cls, name):
+    return _('Hype level for "%(name)s"') % { 'name': name }
 
-  @property
-  def percentage(self):
-    if self._percentage == None:
-      self._percentage = Hypeometer(
-        self.next_event.registered_at, self.next_event.take_place_at
-      ).percentage
-
-    return self._percentage
-
-  @property
-  def title(self):
-    return _('Hype level')
-
-  @property
-  def scale(self):
+  @classmethod
+  def scale(cls):
     return '0.........................................100'
 
-  @property
-  def padding(self):
-    value = self.SCALE * self.percentage // 100 - 1
+  @classmethod
+  def padding(cls, percentage):
+    value = cls.SCALE * percentage // 100 - 1
     return ' ' * value
 
-  def response(self):
-    if self.next_event == None:
-      return _('There are no upcoming events registered')
+  @classmethod
+  @BaseResponder.event_based
+  def response(cls, event):
+    percentage = Hypeometer(
+      event.registered_at, event.take_place_at
+    ).percentage
 
     return (
-      f'{self.title}:\n{self.scale}\n{self.padding}^ {self.percentage}%'
+      f'{cls.title(event.name)}:\n{cls.scale()}\n'
+      f'{cls.padding(percentage)}^ {percentage}%'
     )

@@ -46,9 +46,9 @@ class EventResponder:
 
   @classmethod
   def list(cls):
-    event_list = []
+    event_list = ['Registered events:\n']
 
     for event in Event.all():
       event_list.append(f'{event.name} - {event.take_place_at.date()}')
 
-    return ' '.join(event_list)
+    return '\n'.join(event_list)

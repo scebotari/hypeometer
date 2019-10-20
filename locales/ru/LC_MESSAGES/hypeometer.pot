@@ -42,8 +42,14 @@ msgstr[0] "%(value)d секунда"
 msgstr[1] "%(value)d секунды"
 msgstr[2] "%(value)d секунд"
 
-msgid "Hype level"
-msgstr "Уровень хайпа"
+msgid "Hype level for \"%(name)s\""
+msgstr "Уровень хайпа до \"%(name)s\""
 
 msgid "There are no upcoming events registered"
 msgstr "Не найдено зарегестрированный событий"
+
+msgid "Event \"%(name)s\" is not registered"
+msgstr "Cобытие \"%(name)s\" не зарегестрировано"
+
+msgid "\"%(name)s\" will take place in:"
+msgstr "До \"%(name)s\" осталось:"
