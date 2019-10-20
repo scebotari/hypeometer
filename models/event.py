@@ -5,6 +5,7 @@ from database import connection
 
 class Event(Model):
   __database__ = connection
+  __namespace__ = 'default'
 
   name = TextField(primary_key=True)
   registered_at = DateTimeField()
@@ -28,3 +29,7 @@ class Event(Model):
   @classmethod
   def next(cls):
     return next(Event.query(order_by=Event.take_place_at), None)
+
+  @classmethod
+  def all(cls):
+    return cls.query(order_by=cls.take_place_at)

@@ -14,7 +14,7 @@ class EventResponder:
   @classmethod
   def register(cls, args):
     if len(args) < 2:
-      return ('Wrong number of arguments. Expected date and event name.')
+      return ('Wrong number of arguments. Expected 2: date and event name.')
 
     try:
       date = cls.parse_date(args[0])
@@ -32,3 +32,23 @@ class EventResponder:
       f'Event "{event.name}" was successfully registered for '
       f'{event.take_place_at.strftime("%d-%m-%Y")}'
     )
+
+  @classmethod
+  def delete(cls, args):
+    if len(args) < 1:
+      return ('Wrong number of arguments. Expected 1: event name.')
+
+    name = cls.compile_name(args)
+    event = Event.load(name)
+    event.delete()
+
+    return (f'Event "{name}" was successfully deleted')
+
+  @classmethod
+  def list(cls):
+    event_list = []
+
+    for event in Event.all():
+      event_list.append(f'{event.name} - {event.take_place_at.date()}')
+
+    return ' '.join(event_list)

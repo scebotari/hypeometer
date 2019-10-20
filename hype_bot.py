@@ -7,12 +7,15 @@ from locales.configs import set_locale
 load_dotenv()
 database.connect()
 
+from models.event import Event
 from responders.days_left import DaysLeft
 from responders.hype_level import HypeLevel
 from responders.event_responder import EventResponder
 
 # List of available commands
 # register - Register a new event. Example: /register <date:DD-MM-YYYY> <event_name:string>
+# delete - Delete an existing event. Example: /delete <event_name:string>
+# list - List of existing events
 # hype_level - Show the level of hype
 # days_left - Days before the next trip
 # hype_level_ru - Показать уровень хайпа до следующего события
@@ -35,6 +38,8 @@ class Bot:
 
   def days_left(self, bot, update):
     chat_id = update.message.chat_id
+    self.set_namespace(chat_id)
+
     bot.send_message(chat_id=chat_id, text=DaysLeft().response())
 
   def hype_level_en(self, bot, update):
@@ -43,18 +48,34 @@ class Bot:
 
   def hype_level_ru(self, bot, update):
     set_locale('ru')
-    self.hype_level(bot, update)    
+    self.hype_level(bot, update)
 
   def hype_level(self, bot, update):
     chat_id = update.message.chat_id
-    print(update['message']['chat']['id'])
+    self.set_namespace(chat_id)
 
     bot.send_message(chat_id=chat_id, text=HypeLevel().response())
 
   def register(self, bot, update, args):
     chat_id = update.message.chat_id
+    self.set_namespace(chat_id)
 
     bot.send_message(chat_id=chat_id, text=EventResponder.register(args))
+
+  def list(self, bot, update):
+    chat_id = update.message.chat_id
+    self.set_namespace(chat_id)
+
+    bot.send_message(chat_id=chat_id, text=EventResponder.list())
+
+  def delete(self, bot, update, args):
+    chat_id = update.message.chat_id
+    self.set_namespace(chat_id)
+
+    bot.send_message(chat_id=chat_id, text=EventResponder.delete(args))
+
+  def set_namespace(self, chat_id):
+    Event.__namespace__ = chat_id
 
   def bind_commands(self):
     dp = self.updater.dispatcher
@@ -63,6 +84,8 @@ class Bot:
     dp.add_handler(CommandHandler('hype_level_ru', self.hype_level_ru))
     dp.add_handler(CommandHandler('days_left_ru', self.days_left_ru))
     dp.add_handler(CommandHandler('register', self.register, pass_args=True))
+    dp.add_handler(CommandHandler('list', self.list))
+    dp.add_handler(CommandHandler('delete', self.delete, pass_args=True))
 
   def run_production(self):
     port = int(os.environ.get("PORT", "8443"))
@@ -88,3 +111,8 @@ def main():
 
 if __name__ == '__main__':
   main()
+
+# Event.create(name='Test')
+# Event.__namespace__ = 'default'
+# event = Event.next()
+# print(event.name)
