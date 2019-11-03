@@ -9,12 +9,12 @@ class Event(Model):
 
   name = TextField(primary_key=True)
   registered_at = DateTimeField()
-  take_place_at = DateTimeField()
+  take_place_at = DateTimeField(index=True)
 
   @classmethod
   def register(cls, **attrs):
     attrs['registered_at'] = datetime.utcnow()
-    return cls.create(**attrs)    
+    return cls.create(**attrs)
 
   @classmethod
   def register_or_update(cls, **attrs):
@@ -28,7 +28,13 @@ class Event(Model):
 
   @classmethod
   def next(cls):
-    return next(Event.query(order_by=Event.take_place_at), None)
+    return next(
+      Event.query(
+        Event.take_place_at > datetime.utcnow(),
+        order_by=Event.take_place_at
+      ),
+      None
+    )
 
   @classmethod
   def all(cls):
