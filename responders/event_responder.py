@@ -2,6 +2,8 @@ from datetime import datetime
 
 from responders.base_responder import BaseResponder
 from models.event import Event
+from renderers.event.register import Register
+from renderers.event.list import List
 
 class EventResponder(BaseResponder):
   @classmethod
@@ -18,13 +20,9 @@ class EventResponder(BaseResponder):
       )
 
     name = cls.compile_name(args[1:])
-
     event = Event.register_or_update(name=name, take_place_at=date)
 
-    return (
-      f'Event "{event.name}" was successfully registered for '
-      f'{event.take_place_at.strftime("%d-%m-%Y")}'
-    )
+    return Register(event).render()
 
   @classmethod
   def delete(cls, args):
@@ -39,9 +37,4 @@ class EventResponder(BaseResponder):
 
   @classmethod
   def list(cls):
-    event_list = ['Registered events:\n']
-
-    for event in Event.all():
-      event_list.append(f'{event.name} - {event.take_place_at.date()}')
-
-    return '\n'.join(event_list)
+    return List(Event.upcoming(), Event.archived()).render()

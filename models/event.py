@@ -28,14 +28,22 @@ class Event(Model):
 
   @classmethod
   def next(cls):
-    return next(
-      Event.query(
-        Event.take_place_at > datetime.utcnow(),
-        order_by=Event.take_place_at
-      ),
-      None
-    )
+    return next(cls.upcoming(), None)
 
   @classmethod
   def all(cls):
     return cls.query(order_by=cls.take_place_at)
+
+  @classmethod
+  def upcoming(cls):
+    return cls.query(
+      cls.take_place_at > datetime.utcnow(),
+      order_by=cls.take_place_at
+    )
+
+  @classmethod
+  def archived(cls):
+    return cls.query(
+      cls.take_place_at < datetime.utcnow(),
+      order_by=cls.take_place_at.desc()
+    )

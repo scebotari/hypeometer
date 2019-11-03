@@ -1,12 +1,14 @@
+from datetime import datetime
+
 from models.event import Event
 
 class BaseResponder:
   @classmethod
-  def parse_date(self, date_str):
+  def parse_date(cls, date_str):
     return datetime.strptime(date_str, '%d-%m-%Y')
 
   @classmethod
-  def compile_name(self, name_args):
+  def compile_name(cls, name_args):
     return ' '.join(name_args)
 
   @classmethod
