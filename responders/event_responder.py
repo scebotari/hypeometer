@@ -1,16 +1,9 @@
 from datetime import datetime
 
+from responders.base_responder import BaseResponder
 from models.event import Event
 
-class EventResponder:
-  @classmethod
-  def parse_date(self, date_str):
-    return datetime.strptime(date_str, '%d-%m-%Y')
-
-  @classmethod
-  def compile_name(self, name_args):
-    return ' '.join(name_args)
-
+class EventResponder(BaseResponder):
   @classmethod
   def register(cls, args):
     if len(args) < 2:

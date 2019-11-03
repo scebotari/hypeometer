@@ -40,7 +40,7 @@ class Bot:
     chat_id = update.message.chat_id
     self.set_namespace(chat_id)
 
-    bot.send_message(chat_id=chat_id, text=DaysLeft.response(args))
+    bot.send_message(chat_id=chat_id, text=DaysLeft.show(args))
 
   def hype_level_en(self, bot, update, args):
     set_locale('en')
