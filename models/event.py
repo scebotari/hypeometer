@@ -11,6 +11,12 @@ class Event(Model):
   registered_at = DateTimeField()
   take_place_at = DateTimeField(index=True)
 
+  def is_upcoming(self):
+    return self.take_place_at >= datetime.utcnow()
+
+  def is_archived(self):
+    return not self.is_upcoming()
+
   @classmethod
   def register(cls, **attrs):
     attrs['registered_at'] = datetime.utcnow()
@@ -37,7 +43,7 @@ class Event(Model):
   @classmethod
   def upcoming(cls):
     return cls.query(
-      cls.take_place_at > datetime.utcnow(),
+      cls.take_place_at >= datetime.utcnow(),
       order_by=cls.take_place_at
     )
 

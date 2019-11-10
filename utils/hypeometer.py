@@ -10,10 +10,6 @@ class Hypeometer:
     return self.passed * 100 // (self.to_date - self.from_date)
 
   @property
-  def remaing(self):
-    return self.to_date - self.__current_time()
-
-  @property
   def passed(self):
     return self.__current_time() - self.from_date
 

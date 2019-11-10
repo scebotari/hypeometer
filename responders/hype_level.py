@@ -6,8 +6,10 @@ class HypeLevel(BaseResponder):
   @classmethod
   @BaseResponder.event_based
   def response(cls, event):
-    percentage = Hypeometer(
-      event.registered_at, event.take_place_at
-    ).percentage
+    percentage = 0
+    if event.is_upcoming():
+      percentage = Hypeometer(
+        event.registered_at, event.take_place_at
+      ).percentage
 
     return Show(event, percentage).render()
