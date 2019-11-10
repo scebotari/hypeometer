@@ -1,5 +1,5 @@
 from walrus import *
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from database import connection
 
@@ -12,10 +12,10 @@ class Event(Model):
   take_place_at = DateTimeField(index=True)
 
   def is_upcoming(self):
-    return self.take_place_at >= datetime.utcnow()
+    return datetime.utcnow() < self.take_place_at
 
   def is_archived(self):
-    return not self.is_upcoming()
+    return datetime.utcnow() > self.take_place_at
 
   @classmethod
   def register(cls, **attrs):

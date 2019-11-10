@@ -53,3 +53,6 @@ msgstr "Cобытие \"%(name)s\" не зарегестрировано"
 
 msgid "\"%(name)s\" will take place in:"
 msgstr "До \"%(name)s\" осталось:"
+
+msgid "After \"%(name)s\" have passed:"
+msgstr "После \"%(name)s\" прошло:"

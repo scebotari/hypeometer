@@ -8,8 +8,11 @@ class Countdown:
   def difference(self):
     return TimeDifference(self.__delta())
 
-  def __current_time(self):
-    return datetime.utcnow()
+  def _start_point(self):
+    return min(datetime.utcnow(), self._end_point())
+
+  def _end_point(self):
+    return self.date
 
   def __delta(self):
-    return self.date - self.__current_time()
+    return self._end_point() - self._start_point()
